@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Block Breaker</title>
+    <style>
+        #id-canvas {
+            border: 1px solid black;
+            width: 400px;
+            height: 400px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="id-canvas" width="400" height="400"></canvas>
+
+    <script>
+        var log = function () {
+            console.log.apply(console, arguments);
+        }
+
+        // 1.canvas
+        var canvas = document.querySelector('#id-canvas')
+        var ctx = canvas.getContext('2d')
+
+        // 2.helper
+        var imageFromPath = function (path) {
+            var img = new Image()
+            img.src = path;
+            return img
+        }
+
+        var Paddle = function () {
+            var img = imageFromPath('Resource/paddle.png')
+            var o = {
+                img: img,
+                x: 200,
+                y: 200,
+                speed: 10,
+            }
+            o.moveLeft = function () {
+                o.x -= o.speed
+            }
+            o.moveRight = function () {
+                o.x += o.speed
+            }
+            return o;
+        }
+
+        // 2.keyboard event
+        var leftDown = false
+        var rightDown = false
+        document.addEventListener('keydown', function (event) {
+            var key = event.key
+            if (key === 'a') {
+                leftDown = true
+            } else if (key === 'd') {
+                rightDown = true
+            }
+        })
+
+        document.addEventListener('keyup', function (event) {
+            var key = event.key
+            if (key === 'a') {
+                leftDown = false
+            } else if (key === 'd') {
+                rightDown = false
+            }
+        })
+
+        function __main() {
+            var paddle = Paddle()
+
+            // 3.fps
+            setInterval(function () {
+                // update x
+                if (leftDown) {
+                    paddle.moveLeft()
+                }
+                if (rightDown) {
+                    paddle.moveRight()
+                }
+
+                // draw
+                ctx.clearRect(0, 0, canvas.width, canvas.height)
+                ctx.drawImage(paddle.img, paddle.x, paddle.y)
+            }, 1000/60)
+        }
+
+        __main()
+    </script>
+</body>
+</html>
