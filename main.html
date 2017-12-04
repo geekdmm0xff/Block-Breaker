@@ -92,9 +92,6 @@
             o.bounce = function () { // 反弹
                 o.speedY *= -1;
             }
-            o.collide = function (obj) {
-                return hitRect(o, obj)
-            }
 
             return o;
         }
@@ -109,6 +106,10 @@
             }
             o.kill = function () {
                 o.alive = false
+            }
+
+            o.collide = function (obj) {
+                return hitRect(o, obj) && o.alive
             }
             return o;
         }
@@ -191,7 +192,7 @@
                 if (paddle.collide(ball)) {
                     ball.bounce()
                 }
-                if (ball.collide(block)) {
+                if (block.collide(ball)) {
                     block.kill()
                     ball.bounce()
                 }
