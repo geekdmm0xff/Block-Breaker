@@ -19,10 +19,6 @@
             console.log.apply(console, arguments);
         }
 
-        // 1.canvas
-        var canvas = document.querySelector('#id-canvas')
-        var ctx = canvas.getContext('2d')
-
         // 2.helper
         var imageFromPath = function (path) {
             var img = new Image()
@@ -47,44 +43,91 @@
             return o;
         }
 
-        // 2.keyboard event
-        var leftDown = false
-        var rightDown = false
-        document.addEventListener('keydown', function (event) {
-            var key = event.key
-            if (key === 'a') {
-                leftDown = true
-            } else if (key === 'd') {
-                rightDown = true
+        var Ball = function () {
+            var img = imageFromPath('Resource/ball.png')
+            var o = {
+                img: img,
+                x: 150,
+                y: 200,
+                speed: 10,
             }
-        })
+            return o;
+        }
 
-        document.addEventListener('keyup', function (event) {
-            var key = event.key
-            if (key === 'a') {
-                leftDown = false
-            } else if (key === 'd') {
-                rightDown = false
+        // 3.game
+        var Game = function () {
+            var g = {}
+
+            var canvas = document.querySelector('#id-canvas')
+            var ctx = canvas.getContext('2d')
+
+            g.canvas = canvas
+            g.context = ctx
+
+            // draw
+            g.drawImage = function (obj) {
+                g.context.drawImage(obj.img, obj.x, obj.y)
             }
-        })
+
+            // 封装点击事件
+            g.keydowns = {} // 按键状态 —— 封装标记
+            g.actions = {}  // 事件回调
+            
+            g.registerAction = function(key, callback) {
+                g.actions[key] = callback
+            }
+
+            // 2.keyboard event
+            window.addEventListener('keydown', function (event) {
+                g.keydowns[event.key] = true
+            })
+
+            window.addEventListener('keyup', function (event) {
+                g.keydowns[event.key] = false
+            })
+            
+            setInterval(function () {
+                // update events
+                var actions = Object.keys(g.keydowns) // 获取所有的 key:
+                for (var i = 0; i < actions.length; i++) {
+                    var key = actions[i]
+                    if (g.keydowns[key]) { // tap -> run
+                        g.actions[key]()
+                    }
+                }
+                g.update()
+                // clear before
+                g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
+                // draw
+                g.draw()
+            }, 1000/60)
+
+            return g
+        }
 
         function __main() {
+            // canvas
+            var game = Game()
+
             var paddle = Paddle()
+            var ball = Ball()
 
-            // 3.fps
-            setInterval(function () {
-                // update x
-                if (leftDown) {
-                    paddle.moveLeft()
-                }
-                if (rightDown) {
-                    paddle.moveRight()
-                }
+            // 注册函数和声明函数是两回事!
+            game.registerAction('a', function () {
+                paddle.moveLeft()
+            })
 
-                // draw
-                ctx.clearRect(0, 0, canvas.width, canvas.height)
-                ctx.drawImage(paddle.img, paddle.x, paddle.y)
-            }, 1000/60)
+            game.registerAction('d', function () {
+                paddle.moveRight()
+            })
+
+            game.update = function () {
+            }
+            game.draw = function () {
+                game.drawImage(paddle)
+                game.drawImage(ball)
+            }
+
         }
 
         __main()
