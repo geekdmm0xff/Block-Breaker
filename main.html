@@ -151,8 +151,9 @@
                 var actions = Object.keys(g.keydowns) // 获取所有的 key:
                 for (var i = 0; i < actions.length; i++) {
                     var key = actions[i]
-                    if (g.keydowns[key] && typeof g.actions[key] == "function" ) { // tap -> run
-                        g.actions[key]()
+                    var callback = g.actions[key]
+                    if (g.keydowns[key] && typeof callback == "function" ) { // tap -> run
+                        callback()
                     }
                 }
                 g.update()
