@@ -31,7 +31,7 @@
             var o = {
                 img: img,
                 x: 200,
-                y: 200,
+                y: 300,
                 speed: 10,
             }
             o.moveLeft = function () {
@@ -39,6 +39,24 @@
             }
             o.moveRight = function () {
                 o.x += o.speed
+            }
+            
+            o.collide = function (d) {
+                var px = o.x <= d.x ? d.x : o.x;
+                var py = o.y <= d.y ? d.y : o.y;
+
+                if (px >= o.x
+                        && px <= o.x + o.img.width
+                        && py >= o.y
+                        && py <= o.y + o.img.height
+                        && px >= d.x
+                        && px <= d.x + d.img.width
+                        && py >= d.y
+                        && py <= d.y + d.img.height ) {
+                    return true;
+                } else {
+                    return false;
+                }
             }
             return o;
         }
@@ -49,8 +67,25 @@
                 img: img,
                 x: 150,
                 y: 200,
-                speed: 10,
+                speedX: 10,
+                speedY: 10,
+                fired: false
             }
+
+            o.move = function () {
+                if (o.fired) { // move! 速度控制坐标走向
+                    if (o.x < 0 || o.x > 400) {
+                        o.speedX *= -1
+                    }
+                    if (o.y < 0 || o.y > 400) {
+                        o.speedY *= -1
+                    }
+                    o.x += o.speedX
+                    o.y += o.speedY
+                    //log(`[${o.x}, ${o.y}]`)
+                }
+            }
+
             return o;
         }
 
@@ -121,7 +156,16 @@
                 paddle.moveRight()
             })
 
+            game.registerAction('f', function () {
+                ball.fired = true
+            })
+
             game.update = function () {
+                ball.move()
+                // 碰撞检测
+                if (paddle.collide(ball)) {
+                    ball.speedY *= -1
+                }
             }
             game.draw = function () {
                 game.drawImage(paddle)
