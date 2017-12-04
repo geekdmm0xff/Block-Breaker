@@ -25,6 +25,24 @@
             img.src = path;
             return img
         }
+        
+        var hitRect = function (o, d) {
+            var px = o.x <= d.x ? d.x : o.x;
+            var py = o.y <= d.y ? d.y : o.y;
+
+            if (px >= o.x
+                    && px <= o.x + o.img.width
+                    && py >= o.y
+                    && py <= o.y + o.img.height
+                    && px >= d.x
+                    && px <= d.x + d.img.width
+                    && py >= d.y
+                    && py <= d.y + d.img.height ) {
+                return true;
+            } else {
+                return false;
+            }
+        }
 
         var Paddle = function () {
             var img = imageFromPath('Resource/paddle.png')
@@ -42,21 +60,7 @@
             }
             
             o.collide = function (d) {
-                var px = o.x <= d.x ? d.x : o.x;
-                var py = o.y <= d.y ? d.y : o.y;
-
-                if (px >= o.x
-                        && px <= o.x + o.img.width
-                        && py >= o.y
-                        && py <= o.y + o.img.height
-                        && px >= d.x
-                        && px <= d.x + d.img.width
-                        && py >= d.y
-                        && py <= d.y + d.img.height ) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return hitRect(o, d)
             }
             return o;
         }
@@ -85,7 +89,27 @@
                     //log(`[${o.x}, ${o.y}]`)
                 }
             }
+            o.bounce = function () { // 反弹
+                o.speedY *= -1;
+            }
+            o.collide = function (obj) {
+                return hitRect(o, obj)
+            }
 
+            return o;
+        }
+
+        var Block = function () {
+            var img = imageFromPath('Resource/block.png')
+            var o = {
+                img: img,
+                x: 100,
+                y: 100,
+                alive: true
+            }
+            o.kill = function () {
+                o.alive = false
+            }
             return o;
         }
 
@@ -126,7 +150,7 @@
                 var actions = Object.keys(g.keydowns) // 获取所有的 key:
                 for (var i = 0; i < actions.length; i++) {
                     var key = actions[i]
-                    if (g.keydowns[key]) { // tap -> run
+                    if (g.keydowns[key] && typeof g.actions[key] == "function" ) { // tap -> run
                         g.actions[key]()
                     }
                 }
@@ -146,6 +170,7 @@
 
             var paddle = Paddle()
             var ball = Ball()
+            var block = Block()
 
             // 注册函数和声明函数是两回事!
             game.registerAction('a', function () {
@@ -164,12 +189,19 @@
                 ball.move()
                 // 碰撞检测
                 if (paddle.collide(ball)) {
-                    ball.speedY *= -1
+                    ball.bounce()
+                }
+                if (ball.collide(block)) {
+                    block.kill()
+                    ball.bounce()
                 }
             }
             game.draw = function () {
                 game.drawImage(paddle)
                 game.drawImage(ball)
+                if (block.alive) {
+                    game.drawImage(block)
+                }
             }
 
         }
