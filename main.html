@@ -10,170 +10,41 @@
             height: 400px;
         }
     </style>
+
+    <script src="Utils.js"></script>
+    <script src="Paddle.js"></script>
+    <script src="Ball.js"></script>
+    <script src="Block.js"></script>
+    <script src="Game.js"></script>
+    <script src="Utils.js"></script>
+    <script src="Resource/Levels.js"></script>
 </head>
 <body>
     <canvas id="id-canvas" width="400" height="400"></canvas>
 
     <script>
-        var log = function () {
-            console.log.apply(console, arguments);
-        }
-
-        // 2.helper
-        var imageFromPath = function (path) {
-            var img = new Image()
-            img.src = path;
-            return img
+        var loadLevels = function (level) {
+            level -= 1
+            var list = levels[level]
+            var blocks = []
+            for (var i = 0; i < list.length; i++) {
+                var e = list[i]
+                var b = Block(e)
+                log(b)
+                blocks.push(b)
+            }
+            return blocks
         }
         
-        var hitRect = function (o, d) {
-            var px = o.x <= d.x ? d.x : o.x;
-            var py = o.y <= d.y ? d.y : o.y;
-
-            if (px >= o.x
-                    && px <= o.x + o.img.width
-                    && py >= o.y
-                    && py <= o.y + o.img.height
-                    && px >= d.x
-                    && px <= d.x + d.img.width
-                    && py >= d.y
-                    && py <= d.y + d.img.height ) {
-                return true;
-            } else {
-                return false;
-            }
-        }
-
-        var Paddle = function () {
-            var img = imageFromPath('Resource/paddle.png')
-            var o = {
-                img: img,
-                x: 200,
-                y: 300,
-                speed: 10,
-            }
-            o.moveLeft = function () {
-                o.x -= o.speed
-            }
-            o.moveRight = function () {
-                o.x += o.speed
-            }
-            
-            o.collide = function (d) {
-                return hitRect(o, d)
-            }
-            return o;
-        }
-
-        var Ball = function () {
-            var img = imageFromPath('Resource/ball.png')
-            var o = {
-                img: img,
-                x: 150,
-                y: 200,
-                speedX: 10,
-                speedY: 10,
-                fired: false
-            }
-
-            o.move = function () {
-                if (o.fired) { // move! 速度控制坐标走向
-                    if (o.x < 0 || o.x > 400) {
-                        o.speedX *= -1
-                    }
-                    if (o.y < 0 || o.y > 400) {
-                        o.speedY *= -1
-                    }
-                    o.x += o.speedX
-                    o.y += o.speedY
-                    //log(`[${o.x}, ${o.y}]`)
-                }
-            }
-            o.bounce = function () { // 反弹
-                o.speedY *= -1;
-            }
-
-            return o;
-        }
-
-        var Block = function () {
-            var img = imageFromPath('Resource/block.png')
-            var o = {
-                img: img,
-                x: 100,
-                y: 100,
-                alive: true
-            }
-            o.kill = function () {
-                o.alive = false
-            }
-
-            o.collide = function (obj) {
-                return hitRect(o, obj) && o.alive
-            }
-            return o;
-        }
-
-        // 3.game
-        var Game = function () {
-            var g = {}
-
-            var canvas = document.querySelector('#id-canvas')
-            var ctx = canvas.getContext('2d')
-
-            g.canvas = canvas
-            g.context = ctx
-
-            // draw
-            g.drawImage = function (obj) {
-                g.context.drawImage(obj.img, obj.x, obj.y)
-            }
-
-            // 封装点击事件
-            g.keydowns = {} // 按键状态 —— 封装标记
-            g.actions = {}  // 事件回调
-            
-            g.registerAction = function(key, callback) {
-                g.actions[key] = callback
-            }
-
-            // 2.keyboard event
-            window.addEventListener('keydown', function (event) {
-                g.keydowns[event.key] = true
-            })
-
-            window.addEventListener('keyup', function (event) {
-                g.keydowns[event.key] = false
-            })
-
-            // 3.loop
-            setInterval(function () {
-                // update events
-                var actions = Object.keys(g.keydowns) // 获取所有的 key:
-                for (var i = 0; i < actions.length; i++) {
-                    var key = actions[i]
-                    var callback = g.actions[key]
-                    if (g.keydowns[key] && typeof callback == "function" ) { // tap -> run
-                        callback()
-                    }
-                }
-                g.update()
-                // clear before
-                g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
-                // draw
-                g.draw()
-            }, 1000/60)
-
-            return g
-        }
-
-        function __main() {
+        var __main = function() {
             // canvas
-            var game = Game()
+            var game = Game(30)
 
             var paddle = Paddle()
             var ball = Ball()
-            var block = Block()
+
+
+            var blockList = loadLevels(1)
 
             // 注册函数和声明函数是两回事!
             game.registerAction('a', function () {
@@ -188,27 +59,50 @@
                 ball.fired = true
             })
 
+            // 注册系统事件
+            window.addEventListener('keydown', function (event) {
+                log('')
+                if (event.key === 'p') {
+                    game.pause ^= 1
+                } else if ('123456789'.split('').includes(event.key)) {
+                    blockList = loadLevels(event.key)
+                }
+            })
+
             game.update = function () {
+                // 暂停检测
+                if (game.pause) {
+                    return
+                }
+
                 ball.move()
+
                 // 碰撞检测
                 if (paddle.collide(ball)) {
                     ball.bounce()
                 }
-                if (block.collide(ball)) {
-                    block.kill()
-                    ball.bounce()
+
+                for (var i = 0; i < blockList.length; i++) {
+                    var b = blockList[i]
+                    if (b.collide(ball)) {
+                        b.kill()
+                        ball.bounce()
+                    }
                 }
             }
+
             game.draw = function () {
                 game.drawImage(paddle)
                 game.drawImage(ball)
-                if (block.alive) {
-                    game.drawImage(block)
+
+                for (var i = 0; i < blockList.length; i++) {
+                    var b = blockList[i]
+                    if (b.alive) {
+                        game.drawImage(b)
+                    }
                 }
             }
-
         }
-
         __main()
     </script>
 </body>

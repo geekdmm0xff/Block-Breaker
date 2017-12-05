@@ -8,18 +8,27 @@
     <done>
         - 事件如何封装的? ok
         - loop 如何封装?  ok
+        - 铺一排砖块 循环加砖块
+        - 封装 paddle move, 限定一个值在一个范围之内
+            move left:  obj.move(obj.x - obj.speed)
+            move right: obj.move(obj.x + obj.speed)
+        - 暂停功能 -> p
+        - fps 可配置
     </done>
 
     <other>
         - 临时变量写在 {} 里面应该起短一点的名字
+        - 暂停是写在 update 回调中, 因为 draw 的回调会清 canvas
     </other>
 
     <todo>
-        1. 铺一排砖块
-        2. 循环加砖块？关卡编辑器！
-        3. paddle 移动限制, move 函数抽象, 限定一个值在一个范围之内
-            move left:  obj.move(obj.x - obj.speed)
-            move right: obj.move(obj.x + obj.speed)
+        - 关卡编辑器！
+
+        - 拆分代码到不同的文件
+
+        - 关卡配置文件 level.js 
+        - 载入关卡方法 1:第一关 2:第二关 …… (valid)
+
     </todo>
 
 
