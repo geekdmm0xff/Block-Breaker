@@ -145,7 +145,8 @@
             window.addEventListener('keyup', function (event) {
                 g.keydowns[event.key] = false
             })
-            
+
+            // 3.loop
             setInterval(function () {
                 // update events
                 var actions = Object.keys(g.keydowns) // 获取所有的 key:
