@@ -1,9 +1,10 @@
-var Block = function (e) {
+var Block = function (position) {
+    var p = position
     var img = imageFromPath('Resource/block.png')
     var o = {
         img: img,
-        x: e.x,
-        y: e.y,
+        x: p.x,
+        y: p.y,
         alive: true
     }
     o.kill = function () {

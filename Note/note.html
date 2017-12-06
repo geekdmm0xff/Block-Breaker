@@ -14,21 +14,23 @@
             move right: obj.move(obj.x + obj.speed)
         - 暂停功能 -> p
         - fps 可配置
+        - 拆分代码到不同的文件
+        - 关卡配置文件 level.js
+        - 载入关卡方法 1:第一关 2:第二关 …… (valid)
     </done>
 
     <other>
         - 临时变量写在 {} 里面应该起短一点的名字
         - 暂停是写在 update 回调中, 因为 draw 的回调会清 canvas
+        - 函数参数的变量要写全, 里面使用可以用短名字接一下
     </other>
 
     <todo>
-        - 关卡编辑器！
-
-        - 拆分代码到不同的文件
-
-        - 关卡配置文件 level.js 
-        - 载入关卡方法 1:第一关 2:第二关 …… (valid)
-
+        - 关卡编辑器
+        - 砖块加生命值
+        - 开启 Debug 相关, 只有开启才有选择关卡和暂停的功能
+        - 动态调整 fps: setTimeout 替换 setInterval, 递归调 setTimeout
+        - 添加 input 可以从界面调整 fps
     </todo>
 
 

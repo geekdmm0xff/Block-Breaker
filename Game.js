@@ -43,6 +43,7 @@ var Game = function (fps) {
                 callback()
             }
         }
+
         g.update()
         // clear before
         g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
