@@ -8,7 +8,20 @@ var Game = function (fps) {
     g.context = ctx
 
     //
+    g.fps = 60
+
+    //
     g.pause = false
+
+    //
+    g.enableDebug = false
+    g.debugCallback = function (callback) {
+        if (!g.enableDebug) {
+            return
+        }
+        log('call!')
+        callback()
+    }
 
     // draw
     g.drawImage = function (obj) {
@@ -27,13 +40,12 @@ var Game = function (fps) {
     window.addEventListener('keydown', function (event) {
         g.keydowns[event.key] = true
     })
-
     window.addEventListener('keyup', function (event) {
         g.keydowns[event.key] = false
     })
 
-    // 3.loop
-    setInterval(function () {
+    // runloop
+    var runloop = function () {
         // update events
         var actions = Object.keys(g.keydowns) // 获取所有的 key:
         for (var i = 0; i < actions.length; i++) {
@@ -49,7 +61,11 @@ var Game = function (fps) {
         g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
         // draw
         g.draw()
-    }, 1000/fps)
+
+        setTimeout(runloop, 1000/g.fps)
+    }
+
+    setTimeout(runloop, 1000/g.fps)
 
     return g
 }
