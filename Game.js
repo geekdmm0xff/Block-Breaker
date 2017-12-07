@@ -6,9 +6,11 @@ var Game = function (fps, paths) {
 
     g.canvas = canvas
     g.context = ctx
+    g.images = {}
 
     //
     g.fps = 60
+    g.score = 0
 
     //
     g.pause = false
@@ -24,7 +26,11 @@ var Game = function (fps, paths) {
 
     // draw
     g.drawImage = function (obj) {
-        g.context.drawImage(obj.img, obj.x, obj.y)
+        g.context.drawImage(obj.image, obj.x, obj.y)
+    }
+    g.drawText = function () {
+        g.context.font = "15px Georgia"
+        g.context.fillText('分数:'+g.score, 10, 390)
     }
 
     // 封装点击事件
@@ -43,26 +49,30 @@ var Game = function (fps, paths) {
         g.keydowns[event.key] = false
     })
 
-    g.imgMap = {}
     // load image
+    g.imageByName = function (name) {
+        var image = g.images[name]
+        var o = {
+            image: image,
+            w: image.width,
+            h: image.height,
+        }
+        return o
+    }
+
     var loadImages = function (callback) {
         var loads = 0
-        var keys = Object.keys(paths)
-        for (let i = 0; i < keys.length; i++) {
-            let k = keys[i]
-            let path = paths[k]
+        var names = Object.keys(paths)
+        for (let i = 0; i < names.length; i++) {
+            let name = names[i]
+            let path = paths[name]
             let img = new Image()
 
             img.src = path;
             img.onload = function () {
                 loads++
-                g.imgMap[k] = {
-                    image: img,
-                    w: img.width,
-                    h: img.height,
-                    name: k,
-                }
-                if (loads == keys.length) {
+                g.images[name] = img
+                if (loads == names.length) {
                     callback()
                 }
             }
@@ -73,6 +83,7 @@ var Game = function (fps, paths) {
         g.config()
         setTimeout(runloop, 1000/g.fps)
     })
+
 
     // runloop
     var runloop = function () {

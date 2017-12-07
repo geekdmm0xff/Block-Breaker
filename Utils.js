@@ -2,12 +2,6 @@ var log = function () {
     console.log.apply(console, arguments);
 }
 
-var imageFromPath = function (path) {
-    var img = new Image()
-    img.src = path;
-    return img
-}
-
 var hitRect = function (o, d) {
     var px = o.x <= d.x ? d.x : o.x;
     var py = o.y <= d.y ? d.y : o.y;

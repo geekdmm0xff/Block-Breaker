@@ -1,22 +1,16 @@
 var Paddle = function (game) {
-    var img = game.imgMap['paddle']
-
-    var o = {
-        img: img.image,
-        x: 200,
-        y: 300,
-        w: img.w,
-        h: img.h,
-        speed: 10,
-    }
+    var o = game.imageByName('paddle')
+    o.x = 200
+    o.y = 300
+    o.speed = 10
 
     o.move = function (d) {
         if (d < 0) {
             o.x = 0
             return
         }
-        if (d > 400 - o.img.width) {
-            o.x = 400 - o.img.width
+        if (d > 400 - o.w) {
+            o.x = 400 - o.w
             return
         }
         o.x = d

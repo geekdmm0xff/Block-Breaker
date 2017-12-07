@@ -1,16 +1,10 @@
 var Ball = function (game) {
-    var img = game.imgMap['ball']
-    var image = img.image
-    var o = {
-        img: image,
-        w: img.w,
-        h: img.h,
-        x: 150,
-        y: 200,
-        speedX: 10,
-        speedY: 10,
-        fired: false
-    }
+    var o = game.imageByName('ball')
+    o.x = 150
+    o.y = 200
+    o.speedX = 10
+    o.speedY = 10
+    o.fired = false
 
     o.move = function () {
         if (o.fired) { // move! 速度控制坐标走向
