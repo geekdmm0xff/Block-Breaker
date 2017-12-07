@@ -22,18 +22,19 @@
 <body>
     <canvas id="id-canvas" width="400" height="400"></canvas>
     <div>
-        <label for="">FPS:</label>
+        <label>FPS:</label>
         <input id="id-speed-input" type="range" min="1">
         <span id="id-speed-span">50</span>
     </div>
     <script>
-        var loadLevels = function (level) {
+        var loadLevels = function (level, game) {
+            log(game)
             level -= 1
             var list = levels[level]
             var blocks = []
             for (var i = 0; i < list.length; i++) {
                 var e = list[i]
-                var b = Block(e)
+                var b = Block(e, game)
                 blocks.push(b)
             }
             return blocks
@@ -42,13 +43,24 @@
         var game = null
         var __main = function() {
             // canvas
-            game = Game(30)
+            game = Game(30, {
+                block: 'Resource/block.png',
+                ball: 'Resource/ball.png',
+                paddle: 'Resource/paddle.png',
+            })
 
-            var paddle = Paddle()
-            var ball = Ball()
+            var paddle = null
+            var ball = null
 
+            var blockList = null
 
-            var blockList = loadLevels(1)
+            // image 加载完回调
+            game.config = function () {
+                log(game)
+                paddle = Paddle(game)
+                ball = Ball(game)
+                blockList = loadLevels(1, game)
+            }
 
             // 注册函数和声明函数是两回事!
             game.registerAction('a', function () {
@@ -71,7 +83,8 @@
                     if (k === 'p') {
                         game.pause ^= 1
                     } else if ('123456789'.includes(k)) {
-                        blockList = loadLevels(Number(k))
+                        log(game)
+                        blockList = loadLevels(Number(k), game)
                     }
                 })
 

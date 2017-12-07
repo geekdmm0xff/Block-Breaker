@@ -13,13 +13,13 @@ var hitRect = function (o, d) {
     var py = o.y <= d.y ? d.y : o.y;
 
     if (px >= o.x
-        && px <= o.x + o.img.width
+        && px <= o.x + o.w
         && py >= o.y
-        && py <= o.y + o.img.height
+        && py <= o.y + o.h
         && px >= d.x
-        && px <= d.x + d.img.width
+        && px <= d.x + d.w
         && py >= d.y
-        && py <= d.y + d.img.height ) {
+        && py <= d.y + d.h ) {
         return true;
     } else {
         return false;

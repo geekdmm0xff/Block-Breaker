@@ -1,16 +1,17 @@
-var Block = function (position) {
+var Block = function (position, game) {
     var p = position
-    var img = imageFromPath('Resource/block.png')
-    log('init life:', p.life)
+    var img = game.imgMap['block']
+    log('load block:', img)
     var o = {
-        img: img,
+        img: img.image,
         x: p.x,
         y: p.y,
+        w:img.w,
+        h:img.h,
         alive: true,
         life:p.life || 1
     }
     o.kill = function () {
-        log(o.life)
         o.life--
         if (o.life == 0) {
             o.alive = false

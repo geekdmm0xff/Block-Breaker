@@ -1,9 +1,12 @@
-var Paddle = function () {
-    var img = imageFromPath('Resource/paddle.png')
+var Paddle = function (game) {
+    var img = game.imgMap['paddle']
+
     var o = {
-        img: img,
+        img: img.image,
         x: 200,
         y: 300,
+        w: img.w,
+        h: img.h,
         speed: 10,
     }
 

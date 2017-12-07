@@ -1,4 +1,4 @@
-var Game = function (fps) {
+var Game = function (fps, paths) {
     var g = {}
 
     var canvas = document.querySelector('#id-canvas')
@@ -19,7 +19,6 @@ var Game = function (fps) {
         if (!g.enableDebug) {
             return
         }
-        log('call!')
         callback()
     }
 
@@ -36,7 +35,7 @@ var Game = function (fps) {
         g.actions[key] = callback
     }
 
-    // 2.keyboard event
+    // keyboard event
     window.addEventListener('keydown', function (event) {
         g.keydowns[event.key] = true
     })
@@ -44,9 +43,39 @@ var Game = function (fps) {
         g.keydowns[event.key] = false
     })
 
+    g.imgMap = {}
+    // load image
+    var loadImages = function (callback) {
+        var loads = 0
+        var keys = Object.keys(paths)
+        for (let i = 0; i < keys.length; i++) {
+            let k = keys[i]
+            let path = paths[k]
+            let img = new Image()
+
+            img.src = path;
+            img.onload = function () {
+                loads++
+                g.imgMap[k] = {
+                    image: img,
+                    w: img.width,
+                    h: img.height,
+                    name: k,
+                }
+                if (loads == keys.length) {
+                    callback()
+                }
+            }
+        }
+    }
+    
+    loadImages(function () {
+        g.config()
+        setTimeout(runloop, 1000/g.fps)
+    })
+
     // runloop
     var runloop = function () {
-        // update events
         var actions = Object.keys(g.keydowns) // 获取所有的 key:
         for (var i = 0; i < actions.length; i++) {
             var key = actions[i]
@@ -64,8 +93,6 @@ var Game = function (fps) {
 
         setTimeout(runloop, 1000/g.fps)
     }
-
-    setTimeout(runloop, 1000/g.fps)
 
     return g
 }
