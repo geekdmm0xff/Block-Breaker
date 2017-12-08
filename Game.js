@@ -1,22 +1,20 @@
-var Game = function (fps, paths) {
-    var g = {}
+var Game = function (fps, paths, loadedCallbck) {
+    var g = {
+        keydowns: {}, // 按键状态 —— 封装标记
+        actions: {},  // 事件回调
+        images: {},
+        fps: 60,
+        score: 0,
+        pause: false,
+        enableDebug: false,
+    }
 
     var canvas = e('#id-canvas')
     var ctx = canvas.getContext('2d')
 
     g.canvas = canvas
     g.context = ctx
-    g.images = {}
 
-    //
-    g.fps = 60
-    g.score = 0
-
-    //
-    g.pause = false
-
-    //
-    g.enableDebug = false
     g.debugCallback = function (callback) {
         if (!g.enableDebug) {
             return
@@ -41,9 +39,6 @@ var Game = function (fps, paths) {
     }
 
     // 封装点击事件
-    g.keydowns = {} // 按键状态 —— 封装标记
-    g.actions = {}  // 事件回调
-
     g.registerAction = function(key, callback) {
         g.actions[key] = callback
     }
@@ -67,7 +62,7 @@ var Game = function (fps, paths) {
         return o
     }
 
-    var loadImages = function (callback) {
+    function loadImages(){
         var loads = 0
         var names = Object.keys(paths)
         for (var i = 0; i < names.length; i++) {
@@ -80,18 +75,17 @@ var Game = function (fps, paths) {
                 loads++
                 g.images[name] = img
                 if (loads == names.length) {
-                    callback()
-                    // run?
+                    run && run()
                 }
             }
         }
     }
-    
-    loadImages(function () {
-        g.config()
-        setTimeout(runloop, 1000/g.fps)
-    })
+    loadImages()
 
+    var run = function () {
+        loadedCallbck && loadedCallbck() // notice
+        setTimeout(runloop, 1000/g.fps)
+    }
 
     // runloop
     var runloop = function () {
@@ -100,10 +94,9 @@ var Game = function (fps, paths) {
             var key = actions[i]
             var callback = g.actions[key]
             if (g.keydowns[key] && typeof callback == "function" ) { // tap -> run
-                callback()
+                callback && callback()
             }
         }
-
         g.update()
         // clear before
         g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
