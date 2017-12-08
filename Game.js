@@ -25,10 +25,17 @@ var Game = function (fps, paths) {
     }
 
     // draw
+    g.drawBackground = function () {
+        g.context.fillStyle = '#565';
+        g.context.fillRect(0, 0, g.canvas.width, g.canvas.height)
+    }
+
     g.drawImage = function (obj) {
         g.context.drawImage(obj.image, obj.x, obj.y)
     }
+
     g.drawText = function () {
+        g.context.fillStyle = '#fff';
         g.context.font = "15px Georgia"
         g.context.fillText('分数:'+g.score, 10, 390)
     }
@@ -74,6 +81,7 @@ var Game = function (fps, paths) {
                 g.images[name] = img
                 if (loads == names.length) {
                     callback()
+                    // run?
                 }
             }
         }

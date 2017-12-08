@@ -119,7 +119,10 @@ var __main = function() {
         }
     }
 
+
     game.draw = function () {
+        game.drawBackground()
+
         game.drawImage(paddle)
         game.drawImage(ball)
 
@@ -129,6 +132,7 @@ var __main = function() {
                 game.drawImage(b)
             }
         }
+
         game.drawText()
     }
 }

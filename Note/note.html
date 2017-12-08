@@ -33,10 +33,23 @@
         - 临时变量写在 {} 里面应该起短一点的名字
         - 暂停是写在 update 回调中, 因为 draw 的回调会清 canvas
         - 函数参数的变量要写全, 里面使用可以用短名字接一下
+        - js callback 调用: callback && callback()
     </other>
 
     <todo>
         - 关卡编辑器
+        - 画背景色
+        - 增加场景对象, 所有逻辑都要拆过来。
+            - s.update()
+            - s.draw()
+
+        - 拆 callback?
+            - Game 成员变量统一
+            - 图片加载完回调时, game.runWithScene(scene)
+            - runWithScene 中再调用 runloop
+
+        - 增加游戏结束Scene
+            - 增加跳转场景
     </todo>
 
 
