@@ -1,10 +1,12 @@
 var log = function () {
-    console.log.apply(console, arguments);
+    console.log.apply(console, arguments)
 }
 
+var e = sel => document.querySelector(sel)
+
 var hitRect = function (o, d) {
-    var px = o.x <= d.x ? d.x : o.x;
-    var py = o.y <= d.y ? d.y : o.y;
+    var px = o.x <= d.x ? d.x : o.x
+    var py = o.y <= d.y ? d.y : o.y
 
     if (px >= o.x
         && px <= o.x + o.w

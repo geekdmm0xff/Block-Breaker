@@ -22,6 +22,11 @@ var Ball = function (game) {
     o.bounce = function () { // 反弹
         o.speedY *= -1;
     }
+    o.tapBall = function (x, y) {
+        var xIN = x > o.x || x < o.x + o.w
+        var yIN = y > o.x || y < o.y + o.h
+        return xIN && yIN
+    }
 
     return o;
 }

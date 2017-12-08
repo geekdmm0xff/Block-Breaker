@@ -1,7 +1,7 @@
 var Game = function (fps, paths) {
     var g = {}
 
-    var canvas = document.querySelector('#id-canvas')
+    var canvas = e('#id-canvas')
     var ctx = canvas.getContext('2d')
 
     g.canvas = canvas
@@ -63,12 +63,12 @@ var Game = function (fps, paths) {
     var loadImages = function (callback) {
         var loads = 0
         var names = Object.keys(paths)
-        for (let i = 0; i < names.length; i++) {
+        for (var i = 0; i < names.length; i++) {
             let name = names[i]
             let path = paths[name]
             let img = new Image()
 
-            img.src = path;
+            img.src = path
             img.onload = function () {
                 loads++
                 g.images[name] = img

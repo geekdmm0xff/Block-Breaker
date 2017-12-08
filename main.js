@@ -28,7 +28,6 @@ var __main = function() {
 
     // image 加载完回调
     game.config = function () {
-        log(game)
         paddle = Paddle(game)
         ball = Ball(game)
         blockList = loadLevels(1, game)
@@ -61,8 +60,8 @@ var __main = function() {
         })
 
         // dynamic speed
-        var input = document.querySelector('#id-speed-input')
-        var span = document.querySelector('#id-speed-span')
+        var input = e('#id-speed-input')
+        var span = e('#id-speed-span')
         input.value = game.fps
         span.innerHTML = game.fps
 
@@ -70,6 +69,26 @@ var __main = function() {
             var v = input.value
             span.innerHTML = v
             game.fps = Number(v)
+        })
+
+        // drag ball
+        var canvas = game.canvas
+        var enableDrag = false
+        canvas.addEventListener('mousedown', function (event) {
+            var x = event.offsetX
+            var y = event.offsetY
+            if (ball.tapBall(x, y)) {
+                enableDrag = true
+            }
+        })
+        canvas.addEventListener('mousemove', function (event) {
+            if (enableDrag) {
+                ball.x = event.offsetX
+                ball.y = event.offsetY
+            }
+        })
+        canvas.addEventListener('mouseup', function (event) {
+            enableDrag = false
         })
     })
 
