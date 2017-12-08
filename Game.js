@@ -6,7 +6,8 @@ var Game = function (fps, paths, loadedCallbck) {
         fps: 60,
         score: 0,
         pause: false,
-        enableDebug: false,
+        enableDebug: true,
+        scene: null,
     }
 
     var canvas = e('#id-canvas')
@@ -16,9 +17,11 @@ var Game = function (fps, paths, loadedCallbck) {
     g.context = ctx
 
     g.debugCallback = function (callback) {
+        log('debug 0')
         if (!g.enableDebug) {
             return
         }
+        log('debug 1')
         callback()
     }
 
@@ -75,16 +78,21 @@ var Game = function (fps, paths, loadedCallbck) {
                 loads++
                 g.images[name] = img
                 if (loads == names.length) {
-                    run && run()
+                    log('load image', g.images)
+                    g.run()
                 }
             }
         }
     }
     loadImages()
 
-    var run = function () {
-        loadedCallbck && loadedCallbck() // notice
+    g.runWithScene = function (scene) {
+        g.scene = scene
         setTimeout(runloop, 1000/g.fps)
+    }
+
+    g.run = function () {
+        loadedCallbck()
     }
 
     // runloop
@@ -94,14 +102,15 @@ var Game = function (fps, paths, loadedCallbck) {
             var key = actions[i]
             var callback = g.actions[key]
             if (g.keydowns[key] && typeof callback == "function" ) { // tap -> run
-                callback && callback()
+                callback()
             }
         }
-        g.update()
+        //
+        g.scene.update()
         // clear before
         g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
         // draw
-        g.draw()
+        g.scene.draw()
 
         setTimeout(runloop, 1000/g.fps)
     }

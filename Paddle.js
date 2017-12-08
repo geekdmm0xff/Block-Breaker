@@ -3,7 +3,6 @@ var Paddle = function (game) {
     o.x = 200
     o.y = 300
     o.speed = 10
-
     o.move = function (d) {
         if (d < 0) {
             o.x = 0
