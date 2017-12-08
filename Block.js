@@ -1,7 +1,7 @@
 var Block = function (position, game) {
     var p = position
     var o = game.imageByName('block')
-    log('load block:', o)
+
     o.x = p.x
     o.y = p.y
     o.alive = true

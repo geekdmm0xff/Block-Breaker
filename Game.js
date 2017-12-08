@@ -17,12 +17,14 @@ var Game = function (fps, paths, loadedCallbck) {
     g.context = ctx
 
     g.debugCallback = function (callback) {
-        log('debug 0')
         if (!g.enableDebug) {
             return
         }
-        log('debug 1')
         callback()
+    }
+
+    g.replaceScene = function (scene) {
+        g.scene = scene
     }
 
     // draw
@@ -86,6 +88,7 @@ var Game = function (fps, paths, loadedCallbck) {
     }
     loadImages()
 
+    // 让外面来启动
     g.runWithScene = function (scene) {
         g.scene = scene
         setTimeout(runloop, 1000/g.fps)

@@ -1,7 +1,7 @@
 var Ball = function (game) {
     var o = game.imageByName('ball')
     o.x = 150
-    o.y = 200
+    o.y = 50
     o.speedX = 10
     o.speedY = 10
     o.fired = false
@@ -19,13 +19,19 @@ var Ball = function (game) {
             //log(`[${o.x}, ${o.y}]`)
         }
     }
+
     o.bounce = function () { // 反弹
         o.speedY *= -1;
     }
+
     o.tapBall = function (x, y) {
         var xIN = x > o.x || x < o.x + o.w
         var yIN = y > o.x || y < o.y + o.h
         return xIN && yIN
+    }
+
+    o.isOver = function (obj) {
+        return o.y > obj.y
     }
 
     return o;

@@ -4,10 +4,6 @@
 var loadLevels = function (level, game) {
     level -= 1
     var list = levels[level]
-    if (level > list.length) {
-        log('level not find!')
-        return
-    }
     var blocks = []
     for (var i = 0; i < list.length; i++) {
         var e = list[i]
@@ -18,7 +14,6 @@ var loadLevels = function (level, game) {
 }
 
 var __main = function() {
-    // canvas
     var paths = {
         block: 'Resource/block.png',
         ball: 'Resource/ball.png',

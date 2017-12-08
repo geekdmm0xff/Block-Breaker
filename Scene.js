@@ -90,6 +90,12 @@ var Scene = function (game) {
             ball.bounce()
         }
 
+        // 是否 paddle
+        if (ball.isOver(paddle)) {
+            var scene = GameOverScene(game)
+            game.replaceScene(scene)
+        }
+
         for (var i = 0; i < blockList.length; i++) {
             var b = blockList[i]
             if (b.collide(ball)) {
@@ -99,7 +105,6 @@ var Scene = function (game) {
                 if (!b.alive) {
                     game.score += 100
                 }
-
             }
         }
     }
