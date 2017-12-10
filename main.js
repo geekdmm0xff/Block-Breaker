@@ -15,9 +15,9 @@ var loadLevels = function (level, game) {
 
 var __main = function() {
     var paths = {
-        block: 'Resource/block.png',
-        ball: 'Resource/ball.png',
-        paddle: 'Resource/paddle.png',
+        block: 'img/block.png',
+        ball: 'img/ball.png',
+        paddle: 'img/paddle.png',
     }
 
     var game = Game(30, paths, function () { // image 加载完回调
