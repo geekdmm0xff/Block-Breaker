@@ -1,4 +1,10 @@
 class Game {
+    static instance(fps, paths, loadCallback) {
+        var i = this.game || new this(fps, paths, loadCallback)
+        log(i)
+        return i
+    }
+
     constructor(fps, paths, loadCallback) {
         this.fps = fps || 60
         this.paths = paths
