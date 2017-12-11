@@ -46,7 +46,6 @@ class Game {
                 loads++
                 this.images[name] = img
                 if (loads == names.length) {
-                    log('load image', this.images)
                     this.run()
                 }
             }

@@ -71,9 +71,7 @@ class Scene extends BaseScene {
     }
 
     loadLevel(blocks) {
-        log('params:', blocks)
         if (blocks) {
-            log('关卡', blocks)
             return blocks
         }
         return loadLevels(1, this.game)
