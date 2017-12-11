@@ -3,7 +3,7 @@ class SceneBegin extends BaseScene {
         super(game)
         // event
         game.registerAction('r', function () {
-            var s = Scene(game)
+            var s = new Scene(game)
             game.replaceScene(s)
         })
     }

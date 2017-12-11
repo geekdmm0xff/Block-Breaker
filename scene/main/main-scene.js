@@ -1,114 +1,111 @@
+class Scene extends BaseScene {
+    constructor(game) {
+        super(game)
+        //
+        this.paddle = Paddle(game)
+        this.ball = Ball(game)
+        this.blockList = loadLevels(1, game)
+        this.canvas = game.canvas
 
-var Scene = function (game) {
-    var s = {
-        game: game,
+        // event
+        game.registerAction('a', () => {
+            this.paddle.moveLeft()
+        })
+        game.registerAction('d', () => {
+            this.paddle.moveRight()
+        })
+        game.registerAction('f', () => {
+            this.ball.fired = true
+        })
+        // debug
+        game.debugCallback(() => {
+            // 注册系统事件
+            window.addEventListener('keydown', event => {
+                var k = event.key
+                if (k === 'p') {
+                    game.pause ^= 1
+                } else if ('123456789'.includes(k)) {
+                    this.blockList = loadLevels(Number(k), game)
+                }
+            })
+
+            // dynamic speed
+            var input = e('#id-speed-input')
+            var span = e('#id-speed-span')
+            input.value = game.fps
+            span.innerHTML = game.fps
+
+            input.addEventListener('change', event => {
+                var v = input.value
+                span.innerHTML = v
+                game.fps = Number(v)
+            })
+
+            // drag ball
+            var enableDrag = false
+            this.canvas.addEventListener('mousedown', event => {
+                var x = event.offsetX
+                var y = event.offsetY
+                if (this.ball.tapBall(x, y)) {
+                    enableDrag = true
+                }
+            })
+            this.canvas.addEventListener('mousemove', event => {
+                if (enableDrag) {
+                    this.ball.x = event.offsetX
+                    this.ball.y = event.offsetY
+                }
+            })
+            this.canvas.addEventListener('mouseup', event => {
+                enableDrag = false
+            })
+        })
     }
 
-    var paddle = Paddle(game)
-    var ball = Ball(game)
-    var blockList = loadLevels(1, game)
+    draw() {
+        this.game.drawBackground()
+        this.game.drawImage(this.paddle)
+        this.game.drawImage(this.ball)
 
-    // 注册函数和声明函数是两回事!
-    game.registerAction('a', function () {
-        paddle.moveLeft()
-    })
-    game.registerAction('d', function () {
-        paddle.moveRight()
-    })
-    game.registerAction('f', function () {
-        ball.fired = true
-    })
-
-    game.debugCallback(function () {
-        // 注册系统事件
-        window.addEventListener('keydown', function (event) {
-            var k = event.key
-            if (k === 'p') {
-                game.pause ^= 1
-            } else if ('123456789'.includes(k)) {
-                blockList = loadLevels(Number(k), game)
-            }
-        })
-
-        // dynamic speed
-        var input = e('#id-speed-input')
-        var span = e('#id-speed-span')
-        input.value = game.fps
-        span.innerHTML = game.fps
-
-        input.addEventListener('change', function (event) {
-            var v = input.value
-            span.innerHTML = v
-            game.fps = Number(v)
-        })
-
-        // drag ball
-        var canvas = game.canvas
-        var enableDrag = false
-        canvas.addEventListener('mousedown', function (event) {
-            var x = event.offsetX
-            var y = event.offsetY
-            if (ball.tapBall(x, y)) {
-                enableDrag = true
-            }
-        })
-        canvas.addEventListener('mousemove', function (event) {
-            if (enableDrag) {
-                ball.x = event.offsetX
-                ball.y = event.offsetY
-            }
-        })
-        canvas.addEventListener('mouseup', function (event) {
-            enableDrag = false
-        })
-    })
-
-    s.draw = function () {
-        game.drawBackground()
-        game.drawImage(paddle)
-        game.drawImage(ball)
-
-        for (var i = 0; i < blockList.length; i++) {
-            var b = blockList[i]
+        for (var i = 0; i < this.blockList.length; i++) {
+            var b = this.blockList[i]
             if (b.alive) {
-                game.drawImage(b)
+                this.game.drawImage(b)
             }
         }
 
-        game.drawText()
+        this.game.drawText()
     }
 
-    s.update = function () {
+    update() {
         // 暂停检测
-        if (game.pause) {
+        if (this.game.pause) {
             return
         }
 
-        ball.move()
+        this.ball.move()
 
         // 碰撞检测
-        if (paddle.collide(ball)) {
-            ball.bounce()
+        if (this.paddle.collide(this.ball)) {
+            this.ball.bounce()
         }
 
         // 是否 paddle
-        if (ball.isOver(paddle)) {
-            var scene = new GameOverScene(game)
-            game.replaceScene(scene)
+        if (this.ball.isOver(this.paddle)) {
+            var scene = new GameOverScene(this.game)
+            this.game.replaceScene(scene)
         }
 
-        for (var i = 0; i < blockList.length; i++) {
-            var b = blockList[i]
-            if (b.collide(ball)) {
+        for (var i = 0; i < this.blockList.length; i++) {
+            var b = this.blockList[i]
+            if (b.collide(this.ball)) {
                 b.kill()
-                ball.bounce()
+                this.ball.bounce()
                 // update score
                 if (!b.alive) {
-                    game.score += 100
+                    this.game.score += 100
                 }
             }
         }
     }
-
-    return s
 }
