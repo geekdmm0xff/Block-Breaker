@@ -1,4 +1,6 @@
 var Block = function (position, game) {
+    log('game:', game)
+
     var p = position
     var o = game.imageByName('block')
 
@@ -16,6 +18,12 @@ var Block = function (position, game) {
 
     o.collide = function (obj) {
         return hitRect(o, obj) && o.alive
+    }
+
+    o.tapBlock = function (x, y) {
+        var xIN = x > o.x && x < o.x + o.w
+        var yIN = y > o.x && y < o.y + o.h
+        return xIN && yIN
     }
     return o;
 }

@@ -1,10 +1,11 @@
 class Scene extends BaseScene {
-    constructor(game) {
+    constructor(game, blocks) {
         super(game)
         //
         this.paddle = Paddle(game)
         this.ball = Ball(game)
-        this.blockList = loadLevels(1, game)
+
+        this.blockList = this.loadLevel(blocks)
         this.canvas = game.canvas
 
         // event
@@ -67,6 +68,15 @@ class Scene extends BaseScene {
                 enableDrag = false
             })
         })
+    }
+
+    loadLevel(blocks) {
+        log('params:', blocks)
+        if (blocks) {
+            log('关卡', blocks)
+            return blocks
+        }
+        return loadLevels(1, this.game)
     }
 
     draw() {
