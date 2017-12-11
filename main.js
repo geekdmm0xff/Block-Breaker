@@ -20,7 +20,7 @@ var __main = function() {
         paddle: 'img/paddle.png',
     }
 
-    var game = Game(30, paths, function () { // image 加载完回调
+    var game = new Game(30, paths, function () { // image 加载完回调
         var scene = new Scene(game)
         game.runWithScene(scene)
     })

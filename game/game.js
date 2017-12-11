@@ -1,64 +1,66 @@
-var Game = function (fps, paths, loadedCallbck) {
-    var g = {
-        keydowns: {}, // 按键状态 —— 封装标记
-        actions: {},  // 事件回调
-        images: {},
-        fps: 60,
-        score: 0,
-        pause: false,
-        enableDebug: true,
-        scene: null,
+class Game {
+    constructor(fps, paths, loadCallback) {
+        this.fps = fps || 60
+        this.paths = paths
+        this.loadCallback = loadCallback
+
+        this.keydowns = {} // 按键状态 —— 封装标记
+        this.actions = {}  // 事件回调
+        this.images = {}
+        this.scene = null
+
+        this.score = 0
+        this.pause = false
+        this.enableDebug = true
+
+        this.canvas = e('#id-canvas')
+        this.context = this.canvas.getContext('2d')
+
+        this.init()
+
+        // keyboard
+        window.addEventListener('keydown', event => {
+            this.keydowns[event.key] = true
+        })
+        window.addEventListener('keyup', event => {
+            this.keydowns[event.key] = false
+        })
     }
 
-    var canvas = e('#id-canvas')
-    var ctx = canvas.getContext('2d')
+    init() {
+        var loads = 0
+        var names = Object.keys(this.paths)
+        for (var i = 0; i < names.length; i++) {
+            let name = names[i]
+            let path = this.paths[name]
+            let img = new Image()
 
-    g.canvas = canvas
-    g.context = ctx
+            img.src = path
+            img.onload = () => {
+                loads++
+                this.images[name] = img
+                if (loads == names.length) {
+                    log('load image', this.images)
+                    this.run()
+                }
+            }
+        }
+    }
 
-    g.debugCallback = function (callback) {
-        if (!g.enableDebug) {
+    //
+    debugCallback(callback) {
+        if (!this.enableDebug) {
             return
         }
         callback()
     }
 
-    g.replaceScene = function (scene) {
-        g.scene = scene
+    replaceScene(scene) {
+        this.scene = scene
     }
 
-    // draw
-    g.drawBackground = function () {
-        g.context.fillStyle = '#565';
-        g.context.fillRect(0, 0, g.canvas.width, g.canvas.height)
-    }
-
-    g.drawImage = function (obj) {
-        g.context.drawImage(obj.image, obj.x, obj.y)
-    }
-
-    g.drawText = function () {
-        g.context.fillStyle = '#fff';
-        g.context.font = "15px Georgia"
-        g.context.fillText('分数:'+g.score, 10, 390)
-    }
-
-    // 封装点击事件
-    g.registerAction = function(key, callback) {
-        g.actions[key] = callback
-    }
-
-    // keyboard event
-    window.addEventListener('keydown', function (event) {
-        g.keydowns[event.key] = true
-    })
-    window.addEventListener('keyup', function (event) {
-        g.keydowns[event.key] = false
-    })
-
-    // load image
-    g.imageByName = function (name) {
-        var image = g.images[name]
+    imageByName(name) {
+        var image = this.images[name]
         var o = {
             image: image,
             w: image.width,
@@ -67,56 +69,57 @@ var Game = function (fps, paths, loadedCallbck) {
         return o
     }
 
-    function loadImages(){
-        var loads = 0
-        var names = Object.keys(paths)
-        for (var i = 0; i < names.length; i++) {
-            let name = names[i]
-            let path = paths[name]
-            let img = new Image()
-
-            img.src = path
-            img.onload = function () {
-                loads++
-                g.images[name] = img
-                if (loads == names.length) {
-                    log('load image', g.images)
-                    g.run()
-                }
-            }
-        }
-    }
-    loadImages()
-
-    // 让外面来启动
-    g.runWithScene = function (scene) {
-        g.scene = scene
-        setTimeout(runloop, 1000/g.fps)
+    // event
+    registerAction(key, callback) {
+        this.actions[key] = callback
     }
 
-    g.run = function () {
-        loadedCallbck()
+
+    // draw
+    drawBackground() {
+        this.context.fillStyle = '#565';
+        this.context.fillRect(0, 0, this.canvas.width, this.canvas.height)
     }
 
-    // runloop
-    var runloop = function () {
-        var actions = Object.keys(g.keydowns) // 获取所有的 key:
+    drawImage(obj) {
+        this.context.drawImage(obj.image, obj.x, obj.y)
+    }
+
+    drawText() {
+        this.context.fillStyle = '#fff';
+        this.context.font = "15px Georgia"
+        this.context.fillText('分数:'+this.score, 10, 390)
+    }
+
+    runWithScene(scene) {
+        this.scene = scene
+        setTimeout(() => {
+            this.runloop()
+        }, 1000/this.fps)
+    }
+
+    run() {
+        this.loadCallback()
+    }
+
+    runloop() {
+        var actions = Object.keys(this.keydowns) // 获取所有的 key:
         for (var i = 0; i < actions.length; i++) {
             var key = actions[i]
-            var callback = g.actions[key]
-            if (g.keydowns[key] && typeof callback == "function" ) { // tap -> run
+            var callback = this.actions[key]
+            if (this.keydowns[key] && typeof callback == "function" ) { // tap -> run
                 callback()
             }
         }
         //
-        g.scene.update()
+        this.scene.update()
         // clear before
-        g.context.clearRect(0, 0, g.canvas.width, g.canvas.height)
+        this.context.clearRect(0, 0, this.canvas.width, this.canvas.height)
         // draw
-        g.scene.draw()
+        this.scene.draw()
 
-        setTimeout(runloop, 1000/g.fps)
+        setTimeout(() => {
+            this.runloop()
+        }, 1000/this.fps)
     }
-
-    return g
 }
