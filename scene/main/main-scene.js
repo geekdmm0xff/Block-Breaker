@@ -25,7 +25,8 @@ class Scene extends BaseScene {
                 if (k === 'p') {
                     game.pause ^= 1
                 } else if ('123456789'.includes(k)) {
-                    this.blockList = loadLevels(Number(k), game)
+                    log('load level;')
+                    this.blockList = loadLevels(Number(k), this.game)
                 }
             })
 
@@ -46,16 +47,22 @@ class Scene extends BaseScene {
             this.canvas.addEventListener('mousedown', event => {
                 var x = event.offsetX
                 var y = event.offsetY
+
+                // ball 点击检测
                 if (this.ball.tapBall(x, y)) {
                     enableDrag = true
                 }
             })
+
             this.canvas.addEventListener('mousemove', event => {
+                var x = event.offsetX
+                var y = event.offsetY
                 if (enableDrag) {
-                    this.ball.x = event.offsetX
-                    this.ball.y = event.offsetY
+                    this.ball.x = x
+                    this.ball.y = y
                 }
             })
+
             this.canvas.addEventListener('mouseup', event => {
                 enableDrag = false
             })
