@@ -1,3 +1,4 @@
+
 var Scene = function (game) {
     var s = {
         game: game,
@@ -92,7 +93,7 @@ var Scene = function (game) {
 
         // 是否 paddle
         if (ball.isOver(paddle)) {
-            var scene = GameOverScene(game)
+            var scene = new GameOverScene(game)
             game.replaceScene(scene)
         }
 

@@ -21,7 +21,7 @@ var __main = function() {
     }
 
     var game = Game(30, paths, function () { // image 加载完回调
-        var scene = Scene(game)
+        var scene = new SceneBegin(game)
         game.runWithScene(scene)
     })
 
